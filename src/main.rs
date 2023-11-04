@@ -55,7 +55,7 @@ fn run(projects: HashMap<usize, PathBuf>) {
 
             let mut cmd = Command::new("cargo");
             cmd.arg("clean");
-            cmd.current_dir(path.clone());
+            cmd.current_dir(&path);
             cmd.spawn().expect(&format!("Failed to run `cargo clean` in {}", path.display()));
         })
 }
