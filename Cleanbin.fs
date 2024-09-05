@@ -7,14 +7,14 @@ let getProjects basePath =
     |> Seq.map Path.GetDirectoryName
 
 let cleanCmd path =
-    let psi = new ProcessStartInfo("cargo", [ "clean" ])
+    let psi = new ProcessStartInfo ("cargo", [ "clean" ])
     psi.UseShellExecute <- false
     psi.RedirectStandardOutput <- false
     psi.RedirectStandardError <- false
     psi.CreateNoWindow <- true
     psi.WorkingDirectory <- path
     
-    printfn "Cleaning %s" path
+    printfn $"Cleaning %s{path}"
     let exec = Diagnostics.Process.Start psi
     exec.WaitForExit ()
 
