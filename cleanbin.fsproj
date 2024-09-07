@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="projects.fs" />
     <Compile Include="Cleanbin.fs" />
   </ItemGroup>
 

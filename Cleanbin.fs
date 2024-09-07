@@ -2,26 +2,26 @@
 open System.IO
 open System.Diagnostics
 
-let getProjects basePath =
-    Directory.EnumerateFiles (basePath, "Cargo.toml", SearchOption.AllDirectories)
-    |> Seq.map Path.GetDirectoryName
+open ProjectTypes
 
-let cleanCmd path =
-    let psi = new ProcessStartInfo ("cargo", [ "clean" ])
-    psi.UseShellExecute <- false
-    psi.RedirectStandardOutput <- false
-    psi.RedirectStandardError <- false
-    psi.CreateNoWindow <- true
-    psi.WorkingDirectory <- path
-    
-    printfn $"Cleaning %s{path}"
-    let exec = Diagnostics.Process.Start psi
-    exec.WaitForExit ()
+let getProjectType file =
+    Registry.KnownTypes
+    |> List.tryFind (fun proj -> proj.searchFor(file))
+
+let getProject (path: string) =
+    getProjectType (Path.GetFileName path)
+    |> Option.map (fun projType -> projType, Path.GetDirectoryName path)
+
+let getProjects basePath =
+    Directory.EnumerateFiles (basePath, "*", SearchOption.AllDirectories)
+    |> Seq.map getProject
 
 let runWith path =
     path
     |> getProjects
-    |> Seq.iter cleanCmd
+    |> Seq.filter Option.isSome
+    |> Seq.map Option.get
+    |> Seq.iter ((<||) cleanProject)
 
     0
 
